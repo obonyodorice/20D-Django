@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Borrowed Books</title>
+    <link rel="stylesheet" href="styling.css" />
+    
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        font-family: "Inter", sans-serif; 
+        background-color: #f8f8f8; 
+        color: #333; 
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #fff; 
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+      }
+
+      /* Header Styles */
+      header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee; /* Light grey separator */
+      }
+
+      h1 {
+        font-size: 2.2em;
+        color: #444; /* Slightly darker grey for headings */
+        font-weight: 600;
+        margin: 0;
+      }
+
+      /* Table Styles */
+      .table-responsive {
+        overflow-x: auto; /* Ensures table is scrollable on small screens */
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse; /* Removes space between borders */
+        margin-top: 20px;
+        font-size: 0.95em;
+      }
+
+      thead th {
+        background-color: #f0f0f0; /* Light grey for table header */
+        color: #555; /* Medium grey for header text */
+        padding: 12px 15px;
+        text-align: left;
+        font-weight: 500;
+        border-bottom: 2px solid #ddd; /* Slightly darker grey bottom border */
+      }
+
+      tbody tr {
+        border-bottom: 1px solid #eee; /* Light grey border between rows */
+      }
+
+      tbody tr:nth-child(even) {
+        background-color: #fafafa; /* Very light grey for even rows */
+      }
+
+      tbody tr:hover {
+        background-color: #f5f5f5; /* Slightly darker hover effect */
+      }
+
+      tbody td {
+        padding: 10px 15px;
+        color: #444; /* Dark grey for cell text */
+      }
+
+      /* Status Badges */
+      .status-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.85em;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .status-returned {
+        background-color: #e6f7ed; /* Very light green */
+        color: #28a745; /* Green text */
+      }
+
+      .status-not-returned {
+        background-color: #fff3e6; /* Very light orange */
+        color: #ff9800; /* Orange text */
+      }
+
+      /* No Books Message */
+      .no-books-message {
+        text-align: center;
+        padding: 50px 20px;
+        color: #777;
+        font-style: italic;
+        background-color: #fdfdfd;
+        border: 1px dashed #e0e0e0;
+        border-radius: 5px;
+        margin-top: 30px;
+      }
+
+      /* Footer Styles */
+      footer {
+        text-align: center;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #eee; /* Light grey separator */
+        color: #777; /* Lighter grey for footer text */
+        font-size: 0.85em;
+      }
+
+      /* Responsive Adjustments */
+      @media (max-width: 768px) {
+        .container {
+          margin: 20px auto;
+          padding: 15px;
+        }
+
+        h1 {
+          font-size: 1.8em;
+        }
+
+        thead th,
+        tbody td {
+          padding: 8px 10px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        h1 {
+          font-size: 1.5em;
+        }
+
+        table {
+          font-size: 0.9em;
+        }
+
+        .status-badge {
+          font-size: 0.75em;
+          padding: 4px 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Borrowed Library Books</h1>
+      </header>
+
+      <main>
+        {% if borrowed_books_data %} {# Changed context variable name here #}
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Borrower</th>
+                <th>Borrow Date</th>
+                <th>Return Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for book in borrowed_books_data %} 
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.borrower_name }}</td>
+                    <td>{{ book.borrow_date|date:"M d, Y" }}</td>
+                    <td>
+                    {% if book.return_date %} 
+                        {{ book.return_date|date:"M d, Y" }}
+                    {% else %} 
+                        Not Returned Yet 
+                    {% endif %}
+                    </td>
+                    <td>
+                    <span
+                        class="status-badge {% if book.is_returned %}status-returned{% else %}status-not-returned{% endif %}"
+                    >
+                        {% if book.is_returned %}
+                            Returned
+                        {% else %}
+                            Not Returned
+                        {%endif %}
+                    </span>
+                    </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <p class="no-books-message">No books have been borrowed yet.</p>
+        {% endif %}
+      </main>
+
+      <footer>
+        <p>&copy; 2025 Library Management. All rights reserved.</p>
+      </footer>
+    </div>
+  </body>
+</html>
